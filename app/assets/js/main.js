@@ -41,6 +41,12 @@
 		return Math.floor(Math.random() * (max - min + 1)) + min
 	}
 
+	function do_see_also(ev) {
+		urlSeed = (ev.target.href.split('#')[1] || '').slice(0, seedLength)
+		refresh()
+		window.scrollTo(0,0)
+	}
+
 	function refresh() {
 		// handle url seed (permalink)
 		var seed = randomSeed(urlSeed)
@@ -114,7 +120,11 @@
 		// see also
 		var seeAlso = []
 		for (i = 0; i < randomInt(2, 4); i += 1) {
-			seeAlso.push('<li><a href="#" class="refresh">' + baba.render('command-name') + '</a>')
+			var newSeed = randomSeed()
+			var commandVerb = baba.render('verb.common')
+			var commandNoun = baba.render('noun.git')
+			var commandNameRaw = ['git', commandVerb, commandNoun].join('-')
+			seeAlso.push('<li><a href="#' + newSeed + '" class="see-also" data-seed="' + newSeed + '">' + commandNameRaw + '</a>')
 		}
 		$('#see-also').innerHTML = seeAlso.join('')
 
@@ -122,6 +132,10 @@
 		var refreshEls = $$('.refresh')
 		for (i = 0; i < refreshEls.length; i += 1) {
 			refreshEls[i].addEventListener('click', refresh)
+		}
+		var refreshEls = $$('.see-also')
+		for (i = 0; i < refreshEls.length; i += 1) {
+			refreshEls[i].addEventListener('click', do_see_also)
 		}
 	}
 	refresh()
